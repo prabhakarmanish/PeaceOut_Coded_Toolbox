@@ -65,7 +65,10 @@ dependencies {
      implementation(libs.androidx.datastore.preferences)
      implementation(libs.play.services.ads)
      implementation(libs.user.messaging.platform)
+    implementation("androidx.compose.animation:animation:1.7.4")
+    implementation("androidx.datastore:datastore-preferences:1.1.1")
+    implementation("androidx.lifecycle:lifecycle-viewmodel-ktx:2.8.6")
+    implementation("androidx.compose.runtime:runtime-livedata:1.7.4")
 
-    implementation(libs.androidx.navigation.compose.v253)
 
 }

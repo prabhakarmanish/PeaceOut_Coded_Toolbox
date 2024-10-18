@@ -1,120 +1,161 @@
 package coded.toolbox.peaceout.screens
 
-import android.annotation.SuppressLint
+import android.content.ActivityNotFoundException
+import android.content.Context
+import android.content.Intent
+import android.net.Uri
+import android.os.Build
+import android.util.Log
+import androidx.annotation.RequiresApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.layout.widthIn
-import androidx.compose.foundation.layout.wrapContentWidth
+import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Settings
-import androidx.compose.material.icons.filled.Share
-import androidx.compose.material.icons.filled.Star
-import androidx.compose.material3.Button
-import androidx.compose.material3.ButtonDefaults
-import androidx.compose.material3.Icon
-import androidx.compose.material3.NavigationBar
-import androidx.compose.material3.NavigationBarItem
-import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Switch
-import androidx.compose.material3.SwitchDefaults
-import androidx.compose.material3.Text
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableIntStateOf
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
+import androidx.compose.material.icons.outlined.Settings
+import androidx.compose.material.icons.outlined.Share
+import androidx.compose.material.icons.outlined.Star
+import androidx.compose.material3.*
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.navigation.NavHostController
 import coded.toolbox.peaceout.R
-import coded.toolbox.peaceout.ads.BannerAd
+import coded.toolbox.peaceout.TimePickerDialog
 import coded.toolbox.peaceout.baisakhiFont
-import com.google.android.gms.ads.AdSize
+import coded.toolbox.peaceout.datastore.DataStoreManager
+import coded.toolbox.peaceout.viewModels.HomeViewModel
+import coded.toolbox.peaceout.viewmodelfactory.HomeViewModelFactory
+import kotlinx.coroutines.launch
 
-@SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
+@RequiresApi(Build.VERSION_CODES.O)
 @Composable
-fun HomeScreen() {
-    var isFullDay by remember { mutableStateOf(true) }
+fun HomeScreen(
+    navController: NavHostController,
+    context: Context,
+    homeViewModel: HomeViewModel = viewModel(factory = HomeViewModelFactory(DataStoreManager(context)))
+) {
+    // Collect state from the ViewModel
+    val isFullDay by homeViewModel.isFullDay.collectAsState()
+    val selectedItem by homeViewModel.selectedItem.collectAsState()
     var showTimePicker by remember { mutableStateOf(false) }
-    var selectedItem by remember { mutableIntStateOf(0) }
+    val scope = rememberCoroutineScope()
+    val context2 = LocalContext.current
+
+
+    LaunchedEffect(Unit) {
+        // This block will run once when the HomeScreen is composed
+        // Here, you could perform any actions needed when the screen starts.
+        // For example, you can directly observe changes in the ViewModel.
+    }
 
     Scaffold(
         bottomBar = {
-            NavigationBar(
-                containerColor = Color.White,
-            ) {
+            NavigationBar(containerColor = Color.LightGray) {
                 NavigationBarItem(
-                    icon = { Icon(Icons.Filled.Share, contentDescription = "Share") },
-                    label = { Text("Share", fontFamily = baisakhiFont) },
+                    icon = {
+                        Icon(
+                            Icons.Outlined.Share,
+                            tint = Color.White,
+                            contentDescription = "Share"
+                        )
+                    },
+                    label = { Text("Share") },
                     selected = selectedItem == 0,
-                    onClick = { selectedItem = 0 },
-                    alwaysShowLabel = false
+                    onClick = {
+                        homeViewModel.updateSelectedItem(0)
+                        shareApp(context)
+                    },
+                    colors = NavigationBarItemDefaults.colors(
+                        selectedIconColor = Color.White, // Set the icon color for selected state
+                        unselectedIconColor = Color.White, // Set the icon color for unselected state
+                        selectedTextColor = Color.White, // Set the text color for selected state
+                        unselectedTextColor = Color.Black, // Set the text color for unselected state
+                        indicatorColor = Color.Black // Set the background color when selected
+                    )
+                    //    alwaysShowLabel = false
                 )
                 NavigationBarItem(
-                    icon = { Icon(Icons.Filled.Settings, contentDescription = "Settings") },
-                    label = { Text("Settings", fontFamily = baisakhiFont) },
+                    icon = {
+                        Icon(
+                            Icons.Outlined.Settings,
+                            tint = Color.White,
+                            contentDescription = "Settings"
+                        )
+                    },
+                    label = { Text("Settings") },
                     selected = selectedItem == 1,
-                    onClick = { selectedItem = 1 },
-                    alwaysShowLabel = false
+                    onClick = {
+                        homeViewModel.updateSelectedItem(1)
+                        navController.navigate("settings")
+                    },
+                    colors = NavigationBarItemDefaults.colors(
+                        selectedIconColor = Color.White, // Set the icon color for selected state
+                        unselectedIconColor = Color.White, // Set the icon color for unselected state
+                        selectedTextColor = Color.White, // Set the text color for selected state
+                        unselectedTextColor = Color.Black, // Set the text color for unselected state
+                        indicatorColor = Color.Black // Set the background color when selected
+                    )
+                    //   alwaysShowLabel = false
                 )
                 NavigationBarItem(
-                    icon = { Icon(Icons.Filled.Star, contentDescription = "Rate") },
-                    label = { Text("Rate", fontFamily = baisakhiFont) },
+                    icon = {
+                        Icon(
+                            Icons.Outlined.Star,
+                            tint = Color.White,
+                            contentDescription = "Rate"
+                        )
+                    },
+                    label = { Text("Rate") },
                     selected = selectedItem == 2,
-                    onClick = { selectedItem = 2 },
-                    alwaysShowLabel = false
+                    onClick = {
+                        homeViewModel.updateSelectedItem(2)
+                        rateApp(context)
+                    },
+                    colors = NavigationBarItemDefaults.colors(
+                        selectedIconColor = Color.White, // Set the icon color for selected state
+                        unselectedIconColor = Color.White, // Set the icon color for unselected state
+                        selectedTextColor = Color.White, // Set the text color for selected state
+                        unselectedTextColor = Color.Black, // Set the text color for unselected state
+                        indicatorColor = Color.Black // Set the background color when selected
+                    )
+                    //     alwaysShowLabel = false
                 )
             }
         },
-        content = {
-
+        content = { paddingValues -> // Add paddingValues for content
             Column(
                 modifier = Modifier
                     .fillMaxSize()
                     .background(Color.White)
-                    .verticalScroll(rememberScrollState()),
+                    .verticalScroll(rememberScrollState())
+                    .padding(paddingValues),
                 verticalArrangement = Arrangement.Top,
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
-                // Your provided layout code here
-                Row(
-                    modifier = Modifier
-                        .padding(90.dp)
-                ) {
+                Row(modifier = Modifier.padding(90.dp)) {
                     Image(
                         painter = painterResource(id = if (isFullDay) R.drawable.hday else R.drawable.fday),
                         contentDescription = if (isFullDay) "Full Day" else "Half Day",
-                        modifier = Modifier
-                            .size(90.dp)
-                            .align(Alignment.CenterVertically)
+                        modifier = Modifier.size(90.dp)
                     )
 
                     Spacer(modifier = Modifier.width(8.dp))
 
                     Switch(
-                        modifier = Modifier.align(Alignment.CenterVertically),
                         checked = isFullDay,
-                        onCheckedChange = { isFullDay = it },
+                        onCheckedChange = { homeViewModel.toggleDayMode(it) },
                         colors = SwitchDefaults.colors(
                             checkedThumbColor = Color.White,
                             uncheckedThumbColor = Color.White,
@@ -128,9 +169,12 @@ fun HomeScreen() {
                 Button(
                     modifier = Modifier
                         .wrapContentWidth()
-                        .padding(top=120.dp)
+                        .padding(top = 120.dp)
                         .widthIn(min = 300.dp, max = 500.dp),
-                    onClick = { showTimePicker = true },
+                    onClick = {
+                        showTimePicker = true
+                        //    navController.navigate("timer")
+                    },
                     shape = RoundedCornerShape(100.dp),
                     colors = ButtonDefaults.buttonColors(containerColor = Color.Black)
                 ) {
@@ -146,21 +190,54 @@ fun HomeScreen() {
                     )
                 }
 
-                Spacer(modifier = Modifier.size(120.dp))
-
-//                BannerAd(
-//                    adUnitId = "ca-app-pub-3940256099942544/6300978111",
-//                    adSize = AdSize.MEDIUM_RECTANGLE)
-                Spacer(modifier = Modifier.height(20.dp))
+                if (showTimePicker) {
+                    TimePickerDialog(
+                        onConfirm = { pickedHour, pickedMinute, isAM ->
+                            showTimePicker = false
+                            val hourIn24Format = if (isAM) pickedHour % 12 else pickedHour % 12 + 12
+                            val dataStoreManager = DataStoreManager(context2)
+                            scope.launch {
+                                dataStoreManager.saveSelectedTime(hourIn24Format, pickedMinute)
+                            }
+                            navController.navigate("timeScreen")
+                        },
+                        onDismiss = { showTimePicker = false }
+                    )
+                }
 
             }
         }
     )
 }
 
-@Preview(showBackground = true)
-@Composable
-fun HomeScreenPreview()
-{
-    HomeScreen()
+// Function to share the app link
+private fun shareApp(context: Context) {
+    val appPackageName = context.packageName
+    val shareText =
+        "Check out this amazing app: https://play.google.com/store/apps/details?id=$appPackageName"
+    val sendIntent = Intent().apply {
+        action = Intent.ACTION_SEND
+        putExtra(Intent.EXTRA_TEXT, shareText)
+        type = "text/plain"
+    }
+    context.startActivity(Intent.createChooser(sendIntent, null))
+}
+
+// Function to rate the app
+private fun rateApp(context: Context) {
+    val appPackageName = context.packageName
+    val rateIntent = Intent(Intent.ACTION_VIEW).apply {
+        data = Uri.parse("market://details?id=$appPackageName")
+    }
+    try {
+        context.startActivity(rateIntent)
+    } catch (e: ActivityNotFoundException) {
+        // Fallback if Google Play is not installed
+        context.startActivity(
+            Intent(
+                Intent.ACTION_VIEW,
+                Uri.parse("https://play.google.com/store/apps/details?id=$appPackageName")
+            )
+        )
+    }
 }

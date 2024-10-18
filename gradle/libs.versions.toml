@@ -1,6 +1,7 @@
 [versions]
 agp = "8.7.1"
 datastorePreferences = "1.1.1"
+datastorePreferencesVersion = "1.0.0"
 kotlin = "2.0.0"
 coreKtx = "1.13.1"
 junit = "4.13.2"
@@ -19,6 +20,7 @@ foundationLayoutAndroid = "1.7.2"
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
 androidx-datastore-preferences = { module = "androidx.datastore:datastore-preferences", version.ref = "datastorePreferences" }
+androidx-datastore-preferences-v100 = { module = "androidx.datastore:datastore-preferences", version.ref = "datastorePreferencesVersion" }
 androidx-navigation-compose = { module = "androidx.navigation:navigation-compose", version.ref = "navigationCompose" }
 androidx-navigation-compose-v253 = { module = "androidx.navigation:navigation-compose", version.ref = "navigationComposeVersion" }
 junit = { group = "junit", name = "junit", version.ref = "junit" }

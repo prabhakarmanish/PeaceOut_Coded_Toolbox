@@ -1,5 +1,6 @@
 package coded.toolbox.peaceout.screens
 
+import android.content.Context
 import android.widget.Toast
 import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.Image
@@ -14,7 +15,6 @@ import androidx.compose.material3.Icon
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
@@ -25,12 +25,18 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavHostController
+import coded.toolbox.peaceout.FullTimerCards
 import coded.toolbox.peaceout.R
+import coded.toolbox.peaceout.datastore.DataStoreManager
 import kotlin.random.Random
 
 @Composable
-fun TimeScreen() {
-
+fun TimeScreen(
+    navController: NavHostController,
+    dataStoreManager: DataStoreManager,
+    context: Context
+) {
     var backPressedOnce by rememberSaveable { mutableStateOf(false) } // State to track back press
     var lastBackPressedTime by rememberSaveable { mutableStateOf(0L) } // Timestamp of last back press
     val context = LocalContext.current
@@ -56,10 +62,10 @@ fun TimeScreen() {
             contentScale = ContentScale.Crop
         )
 
-        //TimerScreen()
+        FullTimerCards(dataStoreManager = dataStoreManager)
 
         FloatingActionButton(
-            onClick = { }, // Navigate back to HomeScreen
+            onClick = {  navController.navigate("homeScreen") },
             containerColor = Color.White,
             modifier = Modifier
                 .align(Alignment.BottomEnd)
@@ -81,11 +87,17 @@ fun TimeScreen() {
                 Toast.makeText(context, "Press again to close the app", Toast.LENGTH_SHORT).show()
             }
         }
+
     }
 }
 
-@Preview
+@Preview(showBackground = true)
 @Composable
-fun PreTime() {
-    TimeScreen()
+fun preview() {
+    TimeScreen(
+        navController = NavHostController(LocalContext.current),
+        dataStoreManager = DataStoreManager(LocalContext.current),
+        context = LocalContext.current
+    )
+
 }
