@@ -15,7 +15,8 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.mutableFloatStateOf
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
@@ -28,8 +29,8 @@ import java.util.Locale
 
 @Composable
 fun TimeCardWithFlip(label: String, value: Int) {
-    var oldValue by remember { mutableStateOf(value) }
-    var rotationY by remember { mutableStateOf(0f) }
+    var oldValue by remember { mutableIntStateOf(value) }
+    var rotationY by remember { mutableFloatStateOf(0f) }
 
     // Trigger flip animation when value changes
     if (oldValue != value) {
@@ -40,7 +41,8 @@ fun TimeCardWithFlip(label: String, value: Int) {
     // Animate the rotation along the Y-axis for flip effect
     val animatedRotationY by animateFloatAsState(
         targetValue = rotationY,
-        animationSpec = androidx.compose.animation.core.tween(durationMillis = 150) // Control flip duration
+        animationSpec = androidx.compose.animation.core.tween(durationMillis = 150),
+        label = "" // Control flip duration
     )
 
     Card(

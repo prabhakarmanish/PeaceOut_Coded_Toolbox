@@ -5,7 +5,6 @@ import android.content.Context
 import android.content.Intent
 import android.net.Uri
 import android.os.Build
-import android.util.Log
 import androidx.annotation.RequiresApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -14,9 +13,9 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.outlined.Settings
-import androidx.compose.material.icons.outlined.Share
-import androidx.compose.material.icons.outlined.Star
+import androidx.compose.material.icons.filled.Settings
+import androidx.compose.material.icons.filled.Share
+import androidx.compose.material.icons.filled.Star
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -27,16 +26,20 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
+import androidx.navigation.compose.rememberNavController
 import coded.toolbox.peaceout.R
 import coded.toolbox.peaceout.TimePickerDialog
+import coded.toolbox.peaceout.ads.BannerAd
 import coded.toolbox.peaceout.baisakhiFont
 import coded.toolbox.peaceout.datastore.DataStoreManager
 import coded.toolbox.peaceout.viewModels.HomeViewModel
 import coded.toolbox.peaceout.viewmodelfactory.HomeViewModelFactory
+import com.google.android.gms.ads.AdSize
 import kotlinx.coroutines.launch
 
 @RequiresApi(Build.VERSION_CODES.O)
@@ -62,12 +65,12 @@ fun HomeScreen(
 
     Scaffold(
         bottomBar = {
-            NavigationBar(containerColor = Color.LightGray) {
+            NavigationBar(containerColor = Color.White) {
                 NavigationBarItem(
                     icon = {
                         Icon(
-                            Icons.Outlined.Share,
-                            tint = Color.White,
+                            Icons.Filled.Share,
+                      //      tint = Color.Black,
                             contentDescription = "Share"
                         )
                     },
@@ -79,8 +82,8 @@ fun HomeScreen(
                     },
                     colors = NavigationBarItemDefaults.colors(
                         selectedIconColor = Color.White, // Set the icon color for selected state
-                        unselectedIconColor = Color.White, // Set the icon color for unselected state
-                        selectedTextColor = Color.White, // Set the text color for selected state
+                        unselectedIconColor = Color.Black, // Set the icon color for unselected state
+                        selectedTextColor = Color.Black, // Set the text color for selected state
                         unselectedTextColor = Color.Black, // Set the text color for unselected state
                         indicatorColor = Color.Black // Set the background color when selected
                     )
@@ -89,8 +92,8 @@ fun HomeScreen(
                 NavigationBarItem(
                     icon = {
                         Icon(
-                            Icons.Outlined.Settings,
-                            tint = Color.White,
+                            Icons.Filled.Settings,
+                   //         tint = Color.Black,
                             contentDescription = "Settings"
                         )
                     },
@@ -102,8 +105,8 @@ fun HomeScreen(
                     },
                     colors = NavigationBarItemDefaults.colors(
                         selectedIconColor = Color.White, // Set the icon color for selected state
-                        unselectedIconColor = Color.White, // Set the icon color for unselected state
-                        selectedTextColor = Color.White, // Set the text color for selected state
+                        unselectedIconColor = Color.Black, // Set the icon color for unselected state
+                        selectedTextColor = Color.Black, // Set the text color for selected state
                         unselectedTextColor = Color.Black, // Set the text color for unselected state
                         indicatorColor = Color.Black // Set the background color when selected
                     )
@@ -112,8 +115,8 @@ fun HomeScreen(
                 NavigationBarItem(
                     icon = {
                         Icon(
-                            Icons.Outlined.Star,
-                            tint = Color.White,
+                            Icons.Filled.Star,
+                           // tint = Color.Black,
                             contentDescription = "Rate"
                         )
                     },
@@ -125,8 +128,8 @@ fun HomeScreen(
                     },
                     colors = NavigationBarItemDefaults.colors(
                         selectedIconColor = Color.White, // Set the icon color for selected state
-                        unselectedIconColor = Color.White, // Set the icon color for unselected state
-                        selectedTextColor = Color.White, // Set the text color for selected state
+                        unselectedIconColor = Color.Black, // Set the icon color for unselected state
+                        selectedTextColor = Color.Black, // Set the text color for selected state
                         unselectedTextColor = Color.Black, // Set the text color for unselected state
                         indicatorColor = Color.Black // Set the background color when selected
                     )
@@ -144,7 +147,8 @@ fun HomeScreen(
                 verticalArrangement = Arrangement.Top,
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
-                Row(modifier = Modifier.padding(90.dp)) {
+                Row(modifier = Modifier.padding(40.dp),
+                    verticalAlignment = Alignment.CenterVertically) {
                     Image(
                         painter = painterResource(id = if (isFullDay) R.drawable.hday else R.drawable.fday),
                         contentDescription = if (isFullDay) "Full Day" else "Half Day",
@@ -169,7 +173,7 @@ fun HomeScreen(
                 Button(
                     modifier = Modifier
                         .wrapContentWidth()
-                        .padding(top = 120.dp)
+                        .padding(top = 150.dp)
                         .widthIn(min = 300.dp, max = 500.dp),
                     onClick = {
                         showTimePicker = true
@@ -189,6 +193,10 @@ fun HomeScreen(
                         )
                     )
                 }
+
+                Spacer(modifier = Modifier.height(50.dp))
+            //    BannerAd(adUnitId = "ca-app-pub-4154300661292859/7964306492", adSize = AdSize.FULL_BANNER)
+                Spacer(modifier = Modifier.height(10.dp))
 
                 if (showTimePicker) {
                     TimePickerDialog(
@@ -240,4 +248,11 @@ private fun rateApp(context: Context) {
             )
         )
     }
+}
+
+@Preview(showBackground = true)
+@Composable
+fun PreviewHomeScreen() {
+    HomeScreen(navController = rememberNavController(), context = LocalContext.current)
+
 }

@@ -11,8 +11,11 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.asPaddingValues
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.ime
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
@@ -50,11 +53,12 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
-import coded.toolbox.peaceout.TimePickerDialog
+import coded.toolbox.peaceout.ads.BannerAd
 import coded.toolbox.peaceout.baisakhiFont
 import coded.toolbox.peaceout.datastore.DataStoreManager
 import coded.toolbox.peaceout.viewModels.SettingsViewModel
 import coded.toolbox.peaceout.viewmodelfactory.SettingsViewModelFactory
+import com.google.android.gms.ads.AdSize
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
@@ -116,12 +120,17 @@ fun SettingsScreen(navController: NavHostController, dataStoreManager: DataStore
                 colors = TopAppBarDefaults.topAppBarColors(containerColor = Color.Black)
             )
         },
+        bottomBar = {
+            BannerAd(adUnitId = "ca-app-pub-4154300661292859/7964306492", adSize = AdSize.BANNER)
+            Spacer(modifier = Modifier.height(10.dp))
+        },
         content = { paddingValues ->
             Column(
                 modifier = Modifier
                     .padding(paddingValues)
                     .padding(16.dp, 0.dp, 16.dp, 0.dp)
                     .verticalScroll(scrollState)
+                    .padding(WindowInsets.ime.asPaddingValues())
             ) {
                 // Full Day Working Hours
                 Text(
